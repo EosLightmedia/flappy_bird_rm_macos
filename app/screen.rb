@@ -2,8 +2,8 @@ class Screen
   attr_accessor :width, :height
 
   def initialize
-    @width = 800.to_i
-    @height = 800.to_i
+    @width = 1280.to_i
+    @height = 720.to_i
   end
   
 end

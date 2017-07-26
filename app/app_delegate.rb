@@ -61,7 +61,7 @@ class AppDelegate
       # mp @skeleton_data
       # mp @skeleton_data[:right_hand][0]
       if @skeleton_data[:right_hand][0] > @skeleton_data[:right_shoulder][0]
-        mp "THE HAND IS HIGHER THAN THE SHOULDER"
+        # mp "THE HAND IS HIGHER THAN THE SHOULDER"
         if @hand_status == 0
           $center.postNotificationName('command_notification', object:self, userInfo:nil)
           @hand_status = 1
@@ -69,7 +69,7 @@ class AppDelegate
         end
       end
       if @skeleton_data[:right_hand][0] < @skeleton_data[:right_hip][0]
-        mp "THE HAND IS lower THAN THE hip"
+        # mp "THE HAND IS lower THAN THE hip"
         @hand_status = 0
       end
     end
