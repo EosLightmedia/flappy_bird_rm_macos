@@ -3,6 +3,7 @@ class SkyLineScene < SKScene
 
   def didMoveToView(view)
     super
+    $center.addObserver(self, selector: 'process_command:', name: 'command_notification', object: nil )
 
     physicsWorld.gravity = CGVectorMake(0.0, -5.0)
     physicsWorld.contactDelegate = self
@@ -24,6 +25,11 @@ class SkyLineScene < SKScene
     label.position = CGPointMake(80, 500)
     label.name = "pause"
     addChild label
+  end
+  
+  def process_command(notification)
+    mp 'FLAP~!'
+    bird_jump
   end
 
   def add_skyline

@@ -1,12 +1,12 @@
-class CloudView < SKView
+class BirdView < SKView
   def initWithFrame(frame)
     super
     # enable_debug
 
-    self.presentScene(new_cloud_scene)
+    self.presentScene(new_bird_scene)
   end
 
-  def new_cloud_scene
+  def new_bird_scene
     scene = SkyLineScene.sceneWithSize(self.frame.size)
     scene.scaleMode = SKSceneScaleModeResizeFill
     scene
