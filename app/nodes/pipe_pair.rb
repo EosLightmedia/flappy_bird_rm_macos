@@ -28,8 +28,8 @@ class PipePair < SKNode
   end
 
   def move_and_remove
-    distance = 520
-    move_pipes = SKAction.moveByX(-distance, y: 0, duration: 0.02 * distance)
+    distance = App::Persistence['pipe_distance'].to_i
+    move_pipes = SKAction.moveByX(-distance, y: 0, duration: (0.02 * distance) * App::Persistence['speed'])
     remove_pipes = SKAction.removeFromParent
 
     SKAction.sequence([move_pipes, remove_pipes])

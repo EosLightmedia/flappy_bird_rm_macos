@@ -5,7 +5,7 @@ class SkyLineScene < SKScene
     super
     $center.addObserver(self, selector: 'process_command:', name: 'command_notification', object: nil )
 
-    physicsWorld.gravity = CGVectorMake(0.0, -5.0)
+    physicsWorld.gravity = CGVectorMake(0.0, App::Persistence['gravity'].to_f)
     physicsWorld.contactDelegate = self
 
     add_skyline
@@ -97,8 +97,8 @@ class SkyLineScene < SKScene
   # This action is used for both the ground and sky.
   #
   def scroll_action(x, duration)
-    width = (x * 2)
-    move = SKAction.moveByX(-width, y: 0, duration: duration * width)
+    width = (x * 200)
+    move = SKAction.moveByX(-width, y: 0, duration: (duration * width))
     reset = SKAction.moveByX(width, y: 0, duration: 0)
 
     SKAction.repeatActionForever(SKAction.sequence([move, reset]))
@@ -107,8 +107,6 @@ class SkyLineScene < SKScene
   def update(current_time)
     @delta = @last_update_time ?  current_time - @last_update_time : 0
     @last_update_time = current_time
-
-    check_controller
 
     move_background
     rotate_bird
@@ -139,25 +137,13 @@ class SkyLineScene < SKScene
     bird = childNodeWithName("bird")
 
     bird.physicsBody.velocity = CGVectorMake(0, 0)
-    bird.physicsBody.applyImpulse CGVectorMake(0, 8)
+    bird.physicsBody.applyImpulse CGVectorMake(0, App::Persistence['jump_height'].to_f)
   end
 
   def rotate_bird
     node = childNodeWithName("bird")
     dy = node.physicsBody.velocity.dy
     node.zRotation = max_rotate(dy * (dy < 0 ? 0.003 : 0.001))
-  end
-
-  def check_controller
-    controllers = GCController.controllers
-
-    if controllers.count > 1
-      controller = controller.first.extendedGamepad
-
-      if controller.buttonA.isPressed?
-        bird_jump
-      end
-    end
   end
 
   def max_rotate(value)

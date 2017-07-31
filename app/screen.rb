@@ -2,8 +2,8 @@ class Screen
   attr_accessor :width, :height
 
   def initialize
-    @width = 1280.to_i
-    @height = 720.to_i
+    @width = App::Persistence['width'].to_i
+    @height = App::Persistence['height'].to_i
   end
   
 end

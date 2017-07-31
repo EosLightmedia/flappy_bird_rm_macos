@@ -1,6 +1,7 @@
 class AppDelegate
   
   def applicationDidFinishLaunching(notification)
+    AppDefaults.load_defaults
 		$center = NSNotificationCenter.defaultCenter 
     @screen = Screen.alloc.init
     @win_size = [@screen.width, @screen.height]
@@ -20,7 +21,7 @@ class AppDelegate
     @mainWindow.setLevel(NSScreenSaverWindowLevel - 2)
     @mainWindow.orderFrontRegardless
 
-    view = BirdView.alloc.initWithFrame(@mainWindow.frame)
+    view = GameView.alloc.initWithFrame(@mainWindow.frame)
     @mainWindow.setContentView(view)
     start_osc_server
   end

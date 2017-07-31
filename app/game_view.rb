@@ -1,8 +1,8 @@
-class BirdView < SKView
+class GameView < SKView
   def initWithFrame(frame)
     super
-    # enable_debug
-
+    enable_debug if App::Persistence['debug']
+                     
     self.presentScene(new_bird_scene)
   end
 
