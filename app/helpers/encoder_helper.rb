@@ -15,7 +15,7 @@ class EncoderHelper
     result = current_position - @last_position
 
     @last_position = current_position
-    result
+    result / 100.0 
 
   end
   
