@@ -19,6 +19,11 @@ Motion::Project::App.setup do |app|
   app.copyright = 'Copyright © 2017 Eos Lightmedia Corporation. All rights reserved.'
   app.codesign_for_release = false
   
+  #Phidget Support
+  app.embedded_frameworks += ['/Library/Frameworks/Phidget22.framework']
+  app.bridgesupport_files << 'resources/phidget22.bridgesupport'
+  app.vendor_project('./vendor/phidget22', :static)
+  
   app.pods do
     pod 'OSCKit'
   end

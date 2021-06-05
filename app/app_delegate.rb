@@ -1,5 +1,9 @@
 class AppDelegate
   
+  PHIDGET_IP = '192.168.1.141'
+  PHIDGET_SERIAL_NUMBER = -1
+  
+  
   def applicationDidFinishLaunching(notification)
     AppDefaults.load_defaults
 		$center = NSNotificationCenter.defaultCenter 
@@ -10,6 +14,14 @@ class AppDelegate
     build_flappy_window
     @skeleton_data = {:right_hand => [0,0], :left_hand => [0,0], :right_shoulder => [0,0], :right_hip => [0,0]}
     @hand_status = 0
+    
+    #adding phidget control in
+    @old_value = 0
+    @old_position = 0
+    @e_helper = EncoderHelper.new
+    setup_listeners
+    setup_phidgets
+    
   end
   
   def build_flappy_window
@@ -74,6 +86,53 @@ class AppDelegate
         @hand_status = 0
       end
     end
+  end
+  
+  def setup_listeners
+    #Phidgets Notification Posting
+    @center = NSNotificationCenter.defaultCenter
+    @center.addObserver(self, selector: 'phidget_attached:', name: 'phidget_attached', object: nil)
+    @center.addObserver(self, selector: 'process_position:', name: 'phidget_position_change', object: nil)
+    @center.addObserver(self, selector: 'process_state:', name: 'phidget_state_change_from_encoder', object: nil) 
+    @center.addObserver(self, selector: 'process_button:', name: 'phidget_state_change_from_button', object: nil) 
+  end
+  
+  def setup_phidgets
+    mp 'Setting up Phidgets'
+    @phidget = EncoderController.new.startEncoder(PHIDGET_SERIAL_NUMBER, port: 1, channel: 0, serverName: 'Vint 1', ip: PHIDGET_IP, networkPort: 5661)
+    #shaun only has an old controller....
+    #@phidget = PhidgetEncoderController.new.createEncoder(-1)
+    
+    @phidget_button = EncoderInputController.new.startEncoderInput(PHIDGET_SERIAL_NUMBER, port: 2, channel: 0, serverName: 'Vint 1', ip: PHIDGET_IP, networkPort: 5661)
+    @phidget_2 = DigitalInputController.new.startDigitalInput(PHIDGET_SERIAL_NUMBER, port: 3, channel: 0, serverName: 'Vint 1', ip: PHIDGET_IP, networkPort: 5661)
+  end
+  
+  #this is called when the phidget 'attaches' to the system (available for talking to)
+	def phidget_attached(notification)
+		value = notification.userInfo
+    mp "Phidget #{value["serial"]} with #{value["port"]} at #{value["channel"]} attached (in AppDelegate)"
+    # sleep(1) #wait for the phidget to get ready to accept calls. May not need this.
+    @phidget_attached = true #this is useful so you dont' write to a phidget which isn't there
+	end
+  
+	def process_detach(notification)
+	  value = notification.userInfo
+    # sleep(1) #wait for the phidget to get ready to accept calls. May not need this.
+    @phidget_attached = false
+    mp "Phidget Detatched!! PANIC!!"
+	end
+  
+  def process_button(notification)
+    # go_home
+  end
+  
+  def process_position(notification)
+    value = notification.userInfo    
+    converted_value = "#{value["position"]}".to_i
+    mp "Position is #{value["position"]} and converted value is #{converted_value}"
+    step = @e_helper.spin_calc(converted_value)
+    mp "#{step} -----------"
+    $center.postNotificationName('encoder_notification', object:self, userInfo:step)
   end
 
   def window_options

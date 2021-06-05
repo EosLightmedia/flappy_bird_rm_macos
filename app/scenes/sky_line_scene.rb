@@ -3,7 +3,8 @@ class SkyLineScene < SKScene
 
   def didMoveToView(view)
     super
-    $center.addObserver(self, selector: 'process_command:', name: 'command_notification', object: nil )
+    $center.addObserver(self, selector: 'process_jump_command:', name: 'command_notification', object: nil )
+    $center.addObserver(self, selector: 'process_encoder_command:', name: 'encoder_notification', object: nil )
 
     physicsWorld.gravity = CGVectorMake(0.0, App::Persistence['gravity'].to_f)
     physicsWorld.contactDelegate = self
@@ -27,9 +28,14 @@ class SkyLineScene < SKScene
     addChild label
   end
   
-  def process_command(notification)
-    mp 'FLAP~!'
+  def process_jump_command(notification)
     bird_jump
+  end
+  
+  def process_encoder_command(notification)
+    value = notification.userInfo
+    mp "Flap! #{value}"
+    bird_move(value)
   end
 
   def add_skyline
@@ -138,6 +144,13 @@ class SkyLineScene < SKScene
 
     bird.physicsBody.velocity = CGVectorMake(0, 0)
     bird.physicsBody.applyImpulse CGVectorMake(0, App::Persistence['jump_height'].to_f)
+  end
+  
+  def bird_move(value)
+    bird = childNodeWithName("bird")
+
+    bird.physicsBody.velocity = CGVectorMake(0, 0)
+    bird.physicsBody.applyImpulse CGVectorMake(0, value.to_f)
   end
 
   def rotate_bird
