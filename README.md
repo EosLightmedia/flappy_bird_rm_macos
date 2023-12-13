@@ -1,4 +1,8 @@
-# Flappin' Motion
+# Flappin' Motion macos
+
+This was modified to use simple kinect input, run on macos and input using a phidgets controller.
+
+Original description below:
 
 This is the demo game built for my Sprite Kit talk at #inspect 2014 in San Francisco. If you would like to see the slides that accompanied this code you can find them here on Speaker Deck:
 
